@@ -1,0 +1,21 @@
+header{
+font-size: 85px;
+text-align: center;
+font-weight: bold;
+background-color: yellow;
+font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+ 
+
+
+}
+body{
+   font-family: Georgia, 'Times New Roman', Times, serif;
+   color: #000000;
+   background-color: blanchedalmond;
+   font-size: 30px;
+   text-align: justify;
+   border-radius: 50px;
+}
+picture{
+    padding-right: 25%;
+}

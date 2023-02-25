@@ -1,0 +1,99 @@
+/interface ethernet
+set [ find default-name=ether1 ] name=ether1-ISP
+set [ find default-name=ether2 ] name=ether2-PPPoE
+set [ find default-name=ether5 ] name=ether5-LAN
+/interface wireless security-profiles
+set [ find default=yes ] supplicant-identity=MikroTik
+/ip hotspot profile
+set [ find default=yes ] html-directory=flash/hotspot
+/ip pool
+add name=pool-LAN ranges=192.168.150.2-192.168.150.254
+add name=pool-PPPoE ranges=16.10.20.2-16.10.20.254
+add name=NON-PAYMENT ranges=100.0.0.5-100.0.0.254
+/ip dhcp-server
+add address-pool=pool-LAN disabled=no interface=ether5-LAN name=dhcp1
+/ppp profile
+add dns-server=8.8.8.8,8.8.4.4 local-address=16.10.20.1 name=5mbps rate-limit=\
+    5M/5M remote-address=pool-PPPoE
+add dns-server=8.8.8.8,8.8.4.4 local-address=16.10.20.1 name=10mbps rate-limit=\
+    10M/10M remote-address=pool-PPPoE
+add dns-server=8.8.8.8,8.8.4.4 local-address=16.10.20.1 name=15mbps rate-limit=\
+    15M/15M remote-address=pool-PPPoE
+add dns-server=8.8.8.8,8.8.4.4 local-address=16.10.20.1 name=20mbps rate-limit=\
+    20M/20M remote-address=pool-PPPoE
+add dns-server=8.8.8.8,8.8.4.4 local-address=16.10.20.1 name=30mbps rate-limit=\
+    30M/30M remote-address=pool-PPPoE
+add dns-server=8.8.8.8,8.8.4.4 local-address=16.10.20.1 name=40mbps rate-limit=\
+    40M/40M remote-address=pool-PPPoE
+add dns-server=8.8.8.8,8.8.4.4 local-address=16.10.20.1 name=50mbps rate-limit=\
+    50M/50M remote-address=pool-PPPoE
+add dns-server=8.8.8.8,8.8.4.4 local-address=16.10.20.1 name=150mbps \
+    rate-limit=150M/150M remote-address=pool-PPPoE
+add local-address=100.0.0.1 name=NON-PAYMENT rate-limit=10M/10M remote-address=\
+    NON-PAYMENT
+/interface pppoe-server server
+add authentication=pap,chap disabled=no interface=ether2-PPPoE \
+    one-session-per-host=yes service-name="PPPoE Server"
+/ip address
+add address=192.168.150.1/24 interface=ether5-LAN network=192.168.150.0
+/ip dhcp-client
+add disabled=no interface=ether1-ISP
+/ip dhcp-server network
+add address=192.168.150.0/24 dns-server=8.8.8.8,8.8.4.4 gateway=192.168.150.1
+/ip dns
+set allow-remote-requests=yes servers=8.8.8.8,8.8.4.4
+/ip firewall address-list
+add address=100.0.0.0/24 list=NON-PAYMENT
+/ip firewall filter
+add action=drop chain=forward src-address-list=NON-PAYMENT
+/ip firewall nat
+add action=masquerade chain=srcnat out-interface=ether1-ISP
+add action=redirect chain=dstnat dst-port=80,443 protocol=tcp src-address-list=\
+    NON-PAYMENT to-ports=8080
+/ip proxy
+set cache-administrator=MAGBES enabled=yes
+/ip proxy access
+add dst-port=8080 src-address=100.0.0.0/24
+add action=deny dst-address=!16.10.20.1 dst-host=!google.com dst-port=80 \
+    redirect-to=16.10.20.1:8080 src-address=100.0.0.0/24
+add action=deny
+/ppp secret
+add name=Aldas30MB password=12345 profile=30mbps service=pppoe
+add name=Baltero password=12345 profile=10mbps service=pppoe
+add name=Bonbon password=12345 profile=10mbps service=pppoe
+add name=Calimutan password=12345 profile=5mbps service=pppoe
+add name=Cercado password=12345 profile=10mbps service=pppoe
+add name=Cercado2 password=12345 profile=10mbps service=pppoe
+add name=Cristobal2 password=12345 profile=10mbps service=pppoe
+add name=Dornie password=12345 profile=10mbps service=pppoe
+add name=Doromal password=12345 profile=10mbps service=pppoe
+add name=Ebus password=12345 profile=20mbps service=pppoe
+add name=Espares password=12345 profile=10mbps service=pppoe
+add name=GMCI password=12345 profile=10mbps service=pppoe
+add name=Gellado password=12345 profile=10mbps service=pppoe
+add name=Homevendo password=12345 profile=20mbps service=pppoe
+add name=Irabonvendo password=12345 profile=10mbps service=pppoe
+add name=Kenneth password=12345 profile=5mbps service=pppoe
+add name=Kolshano password=12345 profile=5mbps service=pppoe
+add name=Mansyon126 password=12345 profile=5mbps service=pppoe
+add name=Milliondagavendo password=12345 profile=10mbps service=pppoe
+add name=Nonoy password=12345 profile=20mbps service=pppoe
+add name=Palanog password=12345 profile=20mbps service=pppoe
+add name=Samillano password=12345 profile=20mbps service=pppoe
+add name=Simon password=12345 profile=10mbps service=pppoe
+add name=Slawtervendo2022 password=12345 profile=20mbps service=pppoe
+add name=Untal password=12345 profile=20mbps service=pppoe
+add name=homewifi password=12345 profile=10mbps service=pppoe
+add name=pc password=12345 profile=5mbps service=pppoe
+add name=pisonet password=12345 profile=5mbps service=pppoe
+add name=Alma password=12345 profile=5mbps service=pppoe
+add name=Naranjo2 password=12345 profile=5mbps service=pppoe
+add name=Naranjovendo password=12345 profile=10mbps service=pppoe
+add name=Peniero password=12345 profile=5mbps service=pppoe
+add name=test password=12345 profile=NON-PAYMENT service=pppoe
+add name=150 password=12345 profile=150mbps service=pppoe
+/system clock
+set time-zone-name=Asia/Manila
+/system identity
+set name="RUIJIE DUAL WAN"
+[admin@RUIJIE DUAL WAN] > 
